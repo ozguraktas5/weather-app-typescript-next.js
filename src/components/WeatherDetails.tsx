@@ -13,8 +13,6 @@ export interface WeatherDetailProps {
   sunset: string;
 }
 
-type Props = {};
-
 export default function WeatherDetails(props: WeatherDetailProps) {
   const {
     visability = "25km",

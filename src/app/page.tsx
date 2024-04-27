@@ -2,12 +2,15 @@
 
 import Container from "@/components/Container";
 import Navbar from "@/components/Navbar";
+import WeatherDetails from "@/components/WeatherDetails";
 import WeatherIcon from "@/components/WeatherIcon";
 import { convertKelvinToCelcius } from "@/utils/convertKelvintoCelcius";
+import { convertWindSpeed } from "@/utils/convertWindSpeed";
 import { getDayOrNightIcon } from "@/utils/getDayOrNightIcon";
+import { metersToKilometers } from "@/utils/metersToKilometers";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import { parseISO } from "date-fns";
+import { fromUnixTime, parseISO } from "date-fns";
 import format from "date-fns/format";
 import Image from "next/image";
 
@@ -149,8 +152,10 @@ export default function Home() {
           </div>
           <div className="flex gap-4">
             <Container className="w-fit justify-center flex-col px-4 items-center">
-              <p className="capitalize text-center">{firstData?.weather[0].description}</p>
-              <WeatherIcon 
+              <p className="capitalize text-center">
+                {firstData?.weather[0].description}
+              </p>
+              <WeatherIcon
                 iconName={getDayOrNightIcon(
                   firstData?.weather[0].icon ?? "",
                   firstData?.dt_txt ?? ""
@@ -158,7 +163,20 @@ export default function Home() {
               />
             </Container>
             <Container className="bg-yellow-300/80 px-6 gap-4 justify-between overflow-x-auto">
-
+              <WeatherDetails
+                visability={metersToKilometers(firstData?.visibility ?? 10000)}
+                airPressure={`${firstData?.main.pressure} hPa`}
+                humidity={`${firstData?.main.humidity}%`}
+                sunrise={format(
+                  fromUnixTime(data?.city.sunrise ?? 1702949452),
+                  "H:mm"
+                )}
+                sunset={format(
+                  fromUnixTime(data?.city.sunset ?? 1702517657),
+                  "H:mm"
+                )}
+                windSpeed={convertWindSpeed(firstData?.wind.speed ?? 1.64)}
+              />
             </Container>
           </div>
         </section>
